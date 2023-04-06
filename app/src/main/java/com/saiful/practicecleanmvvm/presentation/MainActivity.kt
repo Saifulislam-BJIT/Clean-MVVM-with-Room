@@ -5,10 +5,9 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.Text
@@ -21,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.saiful.practicecleanmvvm.data.db.Click
+import com.saiful.practicecleanmvvm.presentation.Composable.ClickList
 import com.saiful.practicecleanmvvm.presentation.ui.theme.PracticeCleanMvvmTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -41,30 +41,42 @@ fun PracticeCleanMvvmAPP(
     modifier: Modifier = Modifier,
     viewModel: ClickViewModel = hiltViewModel()
 ) {
-    Column(
+    Box(
         modifier = modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+        contentAlignment = Alignment.Center
     ) {
-        Text(
-            text = "${viewModel.allClicks.size}",
-            modifier = modifier
-                .padding(64.dp)
-
-                .border(
-                    BorderStroke(2.dp, color = Color.Blue),
-                    shape = RoundedCornerShape(50)
+        LazyColumn(
+            modifier = modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            items(viewModel.allClicks) { click ->
+                ClickList(click = click)
+            }
+            item {
+                Text(
+                    text = "${viewModel.allClicks.size}",
+                    modifier = modifier
+                        .padding(64.dp)
+                        .border(
+                            BorderStroke(2.dp, color = Color.Blue),
+                            shape = RoundedCornerShape(50)
+                        )
+                        .padding(16.dp, 8.dp),
+                    fontSize = 32.sp
                 )
-                .padding(16.dp, 8.dp),
-            fontSize = 32.sp
-        )
-        Button(onClick = {
-            viewModel.addClick(Click(click = true))
-        }) {
-            Text(
-                text = "Click",
-                fontSize = 32.sp
-            )
+            }
+            item {
+                Button(
+                    onClick = { viewModel.addClick(Click(click = true)) },
+                    modifier = Modifier.padding(16.dp)
+                ) {
+                    Text(
+                        text = "Click",
+                        fontSize = 32.sp
+                    )
+                }
+            }
         }
     }
 }
